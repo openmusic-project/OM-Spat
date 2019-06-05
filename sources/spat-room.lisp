@@ -30,7 +30,7 @@
             (decay-fq-low :initarg :decay-fq-low :initform 250 :documentation "cross-over frequency between the low and mid bands (Hz)")
             (decay-fq-high :initarg :decay-fq-high :initform 8000 :documentation "cross-over frequency between the mid and high bands (Hz)")
             )
-           (:icon 502)
+           (:icon :room)
            (:documentation "
 SPAT-ROOM represents room parameters in a spatialization process. 
 These parameters are adapted from IRCAM Spat~.

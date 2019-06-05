@@ -62,7 +62,7 @@ These values are optional and can be specified as constants, BPFs, or BPF-libs
 ROOM: The sources are sent to a reverb processor to generate the room effects.
 - <room> = integer or list of integers: room index for the different sources (rooms parameters are supposed to be provided separately, see SPAT-ROOM and SPAT-SYNTH).
 ")
-  (:icon 501))
+  (:icon :planets))
    
 (defmethod array-data-from-control ((controlvalue BPC) numcols)
   (loop for i from 0 to (- numcols 1)
