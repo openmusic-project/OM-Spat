@@ -39,14 +39,19 @@
   
     (let* ((current-folder (om-make-pathname :directory *spat-renderer*))
            (required-libs '("hdf5.dll" "hdf5_hl.dll" "libcurl.dll" "netcdf.dll" "zlib1.dll"))
-           (spat-dependencies-folder "../../dependencies/" (merge-pathnames current-folder)))
+           (spat-dependencies-folder (merge-pathnames "../../dependencies/" current-folder)))
       
       (loop for lib in required-libs
             unless (probe-file (merge-pathnames lib current-folder))
             do (if (probe-file (merge-pathnames lib spat-dependencies-folder))
-                   (om-copy-file (merge-pathnames lib spat-dependencies-folder) current-folder)
+                   (progn 
+                     (print (format nil "Copying dependency in Spat folder: ~A." lib))
+                     (om-copy-file 
+                      (merge-pathnames lib spat-dependencies-folder) 
+                      (merge-pathnames lib current-folder)))
                  (om-beep-msg (format nil "Spat dependency: ~A not found." lib))))
       )))
+
 
 ;;; (def-num-out panning-type decoding-type HRTF-file num-channels-internal num-reverbs buffersize)
 (defun def-spat-options () 
