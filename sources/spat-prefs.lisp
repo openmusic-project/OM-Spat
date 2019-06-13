@@ -10,7 +10,6 @@
 (add-external-pref-module 'spat)
 
 (defmethod get-external-name ((module (eql 'spat))) "Spat")
-(defmethod get-external-icon ((module (eql 'spat))) (list 1 (find-library "OM-Spat")))
 
 (defmethod get-external-module-vals ((module (eql 'spat)) modulepref) (get-pref modulepref :spat-options))
 (defmethod get-external-module-path ((module (eql 'spat)) modulepref) (get-pref modulepref :spat-path))
@@ -19,7 +18,7 @@
   (set-pref modulepref :spat-path path))
 
 
-(defparameter *spat-renderer* "spat")
+(defparameter *spat-renderer* "spat-sdif-renderer")
 (defparameter *spat-default-hrtf* "IRC_9002_itd_24order_biquads_44100.hrtf")
 (defparameter *spat-default-numout* 2)
 (defparameter *spat-default-panning* "angular")
@@ -27,6 +26,27 @@
 (defparameter *spat-default-nchannels* 8)
 (defparameter *spat-default-nreverb* 1)
 (defparameter *spat-default-buffersize* 512)
+
+
+(defun default-spat-renderer-folder ()
+  (merge-pathnames 
+   "Documents/Max 8/Packages/spat5/media/tools/" 
+   (om::om-user-home)))
+
+(defun check-spat-dependencies () 
+
+  (when (probe-file *spat-renderer*)
+  
+    (let* ((current-folder (om-make-pathname :directory *spat-renderer*))
+           (required-libs '("hdf5.dll" "hdf5_hl.dll" "libcurl.dll" "netcdf.dll" "zlib1.dll"))
+           (spat-dependencies-folder "../../dependencies/" (merge-pathnames current-folder)))
+      
+      (loop for lib in required-libs
+            unless (probe-file (merge-pathnames lib current-folder))
+            do (if (probe-file (merge-pathnames lib spat-dependencies-folder))
+                   (om-copy-file (merge-pathnames lib spat-dependencies-folder) current-folder)
+                 (om-beep-msg (format nil "Spat dependency: ~A not found." lib))))
+      )))
 
 ;;; (def-num-out panning-type decoding-type HRTF-file num-channels-internal num-reverbs buffersize)
 (defun def-spat-options () 
@@ -37,10 +57,8 @@
 
 (defmethod get-external-def-vals ((module (eql 'spat))) 
    (let ((libpath (lib-pathname (find-library "OM-Spat"))))
-     (list :spat-path (om-make-pathname :directory (append (pathname-directory libpath) 
-                                                           '("resources" "bin" #+macosx "mac" #+win32 "win" #+linux "linux"))
-                                        :host (pathname-host libpath) :device (pathname-device libpath)
-                                        :name "spat" #+win32 :type #+win32  "exe")
+     (list :spat-path (om-make-pathname :directory (default-spat-renderer-folder)
+                                        :name "spat-sdif-renderer" #+win32 :type #+win32 "exe")
            :spat-options (def-spat-options))))
 
 (defmethod save-external-prefs ((module (eql 'spat))) 
@@ -67,7 +85,9 @@
       (setf *spat-default-buffersize* (nth 6 list-prefs))
       )
     (when (get-pref moduleprefs :spat-path)
-      (setf *spat-renderer* (find-true-external (get-pref moduleprefs :spat-path))))
+      (setf *spat-renderer* (find-true-external (get-pref moduleprefs :spat-path)))
+      #+mswindows(check-spat-dependencies)
+      )
     ))
 
 (put-external-preferences 'spat (find-pref-module :externals))
