@@ -139,21 +139,23 @@ Spat by Thibaut Carpentier, Ircam Acoustic/Cognitive Spaces, 2010.
      
        (when (forum-protec *spat-renderer* (find-library "OM-Spat"))
          (if (probe-file *spat-renderer*)
-           (om-cmd-line (format nil "~s -p ~A ~A -o ~D -r ~D -I ~D -M 1 -f ~s -D ~s -s ~s -O ~s -F ~s -v 1 -b ~D ~A ~A -i ~A -A ~D"
-                                (namestring *spat-renderer*)
-                                (string-downcase mode) decoding nch nrev nspatchannels
-                                self
-                                (namestring (om-make-pathname :directory outfile))
-                                (namestring (tmpfile nil)) ;(om-make-pathname :directory outfile)) (tmpfile nil)
-                                (pathname-name outfile)
-                                outformat
-                                buffersize
-                                hrtffile
-                                speakers
-                                interpol
-                                air)
-                        *sys-console*)
-         (om-beep-msg "Spat renderer not found. Set path in OM Preferences !!!")))
+             (om-cmd-line
+              (format nil 
+                               "~s -p ~A ~A -o ~D -r ~D -I ~D -M 1 -f ~s -D ~s -s ~s -O ~s -F ~s -v 1 -b ~D ~A ~A -i ~A -A ~D"
+                               (namestring *spat-renderer*)
+                               (string-downcase mode) decoding nch nrev nspatchannels
+                               self
+                               (namestring (om-make-pathname :directory outfile))
+                               (namestring (tmpfile nil)) ;(om-make-pathname :directory outfile)) (tmpfile nil)
+                               (pathname-name outfile)
+                               outformat
+                               buffersize
+                               hrtffile
+                               speakers
+                               interpol
+                               air)
+              *sys-console*)
+           (om-beep-msg "Spat renderer not found. Set path in OM Preferences !!!")))
        (when *delete-inter-file* (clean-tmp-files)) 
        (and outfile (probe-file outfile)))))
 
