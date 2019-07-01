@@ -28,7 +28,7 @@
 (unless (fboundp 'om::set-lib-release) (defmethod om::set-lib-release (version &optional lib) nil))
 
 
-(om::set-lib-release 2.9)
+(om::set-lib-release 2.10)
 
 ;; v 2.4: player adapted for OM 6.7
 ;; v 2.5: player adapted for OM 6.8
@@ -52,7 +52,7 @@ Authors/Contributors :
 
 (om-print "
 ;;;============================================================
-;;; OM-Spat 2.9
+;;; OM-Spat 2.10
 ;;; Representation and rendering of spatial scene descriptions
 ;;; (c) IRCAM - Representations Musicales + Acoustic and Cognitive Spaces
 ;;;============================================================
