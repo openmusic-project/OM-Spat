@@ -30,7 +30,7 @@
 
 (defun default-spat-renderer-folder ()
   (merge-pathnames 
-   "Documents/Max 8/Packages/spat5/media/tools/" 
+   " " 
    (om::om-user-home)))
 
 (defun check-spat-dependencies () 
