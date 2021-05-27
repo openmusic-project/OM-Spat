@@ -76,10 +76,11 @@
 
 ;;;===========================
 
-(defmethod! spat-synth ((self string) out-config &key out-path (panning-type 'angular) rooms pos-interpol (air-absorption t))
+(defmethod! spat-synth ((self string) out-config &key out-path (panning-type 'angular) rooms pos-interpol (air-absorption t) (doppler 'false))
    :icon '(410)
-   :initvals '(nil 2 nil angular nil 30 t)
-   :menuins '((3 (("angular" angular) ("vbap" vbap) ("binaural" binaural))))
+   :initvals '(nil 2 nil angular nil 30 t false)
+   :menuins '((3 (("angular" angular) ("vbap" vbap) ("binaural" binaural)))
+              (7 (("false" false) ("true" true))))
    :indoc '("sdif file or spat-matrix" "out/speakers config" "output file pathname" "type of spatialization" "room description(s)" "position interpolation" "activate air absorption")
    :outdoc '("sound file pathname")
    :doc "Synthesizes a multichannel sound file from a SPAT-MATRIX or an SDIF file using Spat 4.
@@ -106,6 +107,7 @@ If <pos-interpol> = T (or anything else instead of a duration in ms) the interpo
 
 <air-absorption> allows to deactivate air-absorption simulation in synthesis.
 
+<doppler> doppler simulation. Default = "false"
 Spat by Thibaut Carpentier, Ircam Acoustic/Cognitive Spaces, 2010.
 " 
    (let* ((outfile (handle-new-file-exists (or out-path (om-choose-new-file-dialog :types (list (om-str :all-files) "*.*" 
@@ -113,6 +115,7 @@ Spat by Thibaut Carpentier, Ircam Acoustic/Cognitive Spaces, 2010.
                                                                                                 (format nil (om-str :file-format) "WAV") "*.wav")))))
 
           (mode (or panning-type *spat-default-panning*))
+          (dop (if (equal doppler 'false) 0 1))
           (nch  (cond ((equal mode 'binaural) 2)
                       ((numberp out-config) out-config)
                       (t (or (length (get-speakers-list out-config))
@@ -141,8 +144,9 @@ Spat by Thibaut Carpentier, Ircam Acoustic/Cognitive Spaces, 2010.
          (if (probe-file *spat-renderer*)
              (om-cmd-line
               (format nil 
-                               "~s -p ~A ~A -o ~D -r ~D -I ~D -M 1 -f ~s -D ~s -s ~s -O ~s -F ~s -v 1 -b ~D ~A ~A -i ~A -A ~D"
+                               "~s -e ~D -p ~A ~A -o ~D -r ~D -I ~D -M 1 -f ~s -D ~s -s ~s -O ~s -F ~s -v 1 -b ~D ~A ~A -i ~A -A ~D"
                                (namestring *spat-renderer*)
+                               dop
                                (string-downcase mode) decoding nch nrev nspatchannels
                                self
                                (namestring (om-make-pathname :directory outfile))
@@ -159,23 +163,23 @@ Spat by Thibaut Carpentier, Ircam Acoustic/Cognitive Spaces, 2010.
        (when *delete-inter-file* (clean-tmp-files)) 
        (and outfile (probe-file outfile)))))
 
-(defmethod! spat-synth ((self pathname) out-config &key out-path (panning-type 'angular) rooms pos-interpol (air-absorption t))
+(defmethod! spat-synth ((self pathname) out-config &key out-path (panning-type 'angular) rooms pos-interpol (air-absorption t) (doppler 'false))
     (spat-synth (namestring self) out-config 
                 :out-path out-path :panning-type panning-type :pos-interpol pos-interpol 
-                :rooms rooms :air-absorption air-absorption))
+                :rooms rooms :air-absorption air-absorption :doppler doppler))
 
-(defmethod! spat-synth ((self sdiffile) out-config &key out-path (panning-type 'angular) rooms pos-interpol (air-absorption t))
+(defmethod! spat-synth ((self sdiffile) out-config &key out-path (panning-type 'angular) rooms pos-interpol (air-absorption t) (doppler 'false))
     (spat-synth (filepathname self) out-config 
                 :out-path out-path :panning-type panning-type :pos-interpol pos-interpol 
-                :rooms rooms :air-absorption air-absorption))
+                :rooms rooms :air-absorption air-absorption :doppler doppler))
 
-(defmethod! spat-synth ((self spat-matrix) out-config &key out-path (panning-type 'angular) rooms pos-interpol (air-absorption t))
+(defmethod! spat-synth ((self spat-matrix) out-config &key out-path (panning-type 'angular) rooms pos-interpol (air-absorption t) (doppler 'false))
    (let* ((tmppath (handle-new-file-exists (tmpfile "spat.sdif")))
           (sdif (save-spat-sdif self :stream-mode 'sep :out tmppath :export-sounds :temp :rooms rooms)))
      (add-tmp-file tmppath)
      (spat-synth sdif out-config :out-path out-path :panning-type panning-type 
                  :pos-interpol pos-interpol :rooms rooms
-                 :air-absorption air-absorption)
+                 :air-absorption air-absorption :doppler doppler)
      ))
 
 #|
