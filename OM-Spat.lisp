@@ -28,12 +28,13 @@
 (unless (fboundp 'om::set-lib-release) (defmethod om::set-lib-release (version &optional lib) nil))
 
 
-(om::set-lib-release 2.10)
+(om::set-lib-release 2.11)
 
 ;; v 2.4: player adapted for OM 6.7
 ;; v 2.5: player adapted for OM 6.8
 ;; v 2.6: Linux compat
 ;; v 2.7: fix in spat-room gen frames + new binaries
+;; v 2.11; added doppler effect
  
 (doc-library "
 OM-Spat is a library for the creation and rendering of spatial scenes in OpenMusic.
@@ -52,7 +53,7 @@ Authors/Contributors :
 
 (om-print "
 ;;;============================================================
-;;; OM-Spat 2.10
+;;; OM-Spat 2.11
 ;;; Representation and rendering of spatial scene descriptions
 ;;; (c) IRCAM - Representations Musicales + Acoustic and Cognitive Spaces
 ;;;============================================================
