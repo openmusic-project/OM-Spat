@@ -107,7 +107,7 @@ If <pos-interpol> = T (or anything else instead of a duration in ms) the interpo
 
 <air-absorption> allows to deactivate air-absorption simulation in synthesis.
 
-<doppler> doppler simulation. Default = "false"
+<doppler> doppler simulation. Default = false
 Spat by Thibaut Carpentier, Ircam Acoustic/Cognitive Spaces, 2010.
 " 
    (let* ((outfile (handle-new-file-exists (or out-path (om-choose-new-file-dialog :types (list (om-str :all-files) "*.*" 
