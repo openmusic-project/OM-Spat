@@ -15,8 +15,6 @@ This program is free software. It is distributed in the hope that it will be use
 
 _This library does NOT include Spat sources or binaries, which must be installed separately and (if necessary) located in the Spat section of OM Preferences/Libraries tab._
 
-Get Spat here: http://forumnet.ircam.fr/shop/en/forumnet/49-spat.html
-
 
 ---------------------
 
